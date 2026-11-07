@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Flask Queue Simulator (FIFO)</h1>
+
+<form method="post" action="{{ url_for('operate') }}" class="input-row">
+    <input id="value" type="text" name="value" maxlength="24" placeholder="Enter a value" autocomplete="off">
+    <button type="submit" name="action" value="enqueue" class="btn primary">Enqueue</button>
+    <button type="submit" name="action" value="dequeue" class="btn">Dequeue</button>
+    <button type="submit" name="action" value="peek" class="btn">Peek</button>
+    <button type="submit" name="action" value="clear" class="btn danger">Clear</button>
+</form>
+
+<section>
+    <h2>Queue <small>({{ size }} item{{ '' if size == 1 else 's' }})</small></h2>
+    {% if items %}
+    <div class="queue">
+        {% for item in items %}
+        <div class="cell-wrap">
+            <span class="label">
+                {%- if loop.first %}Front{% endif -%}
+                {%- if loop.first and loop.last %} / {% endif -%}
+                {%- if loop.last %}Rear{% endif -%}
+            </span>
+            <div class="cell {{ 'front' if loop.first }} {{ 'rear' if loop.last }} {{ 'highlight' if loop.first and highlight }}">{{ item }}</div>
+        </div>
+        {% endfor %}
+    </div>
+    <p class="hint">Dequeue removes from the Front. Enqueue adds to the Rear.</p>
+    {% else %}
+    <p class="empty">The queue is empty.</p>
+    {% endif %}
+</section>
+
+<section>
+    <h2>Removed Items</h2>
+    {% if removed %}
+    <div class="queue">
+        {% for item in removed %}
+        <div class="cell removed-cell">{{ item }}</div>
+        {% endfor %}
+    </div>
+    <p class="hint">Most recently dequeued is first.</p>
+    {% else %}
+    <p class="empty">No items removed yet.</p>
+    {% endif %}
+</section>
+{% endblock %}
